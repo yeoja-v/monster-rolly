@@ -1,5 +1,7 @@
 import './App.css';
 import { Component } from 'react';
+import CardList from './components/card-list/card-list-component';
+import SearchBox from './components/searchbox/search-box.component';
 
 class App extends Component {
 
@@ -8,7 +10,8 @@ class App extends Component {
 // initialize the state, thats what constructor function does
     this.state = {
       monsters: [],
-      searchField: ''
+      searchField: '',
+    
     };
     console.log('constructor')
   }
@@ -25,32 +28,44 @@ class App extends Component {
     )
   }
 
+  onSearchChange = (event) => {console.log(event.target.value);
+          
+    const searchField = event.target.value.toLocaleLowerCase();
+
+    this.setState(() => {
+      return { searchField }
+      
+    })
+  }
+
   render () {
 
+    const { monsters, searchField } = this.state;
+    const { onSearchChange } = this;
 
-    const filteredMonsters = this.state.monsters.filter((monster) => {
-      return monster.name.toLocaleLowerCase().includes(this.state.searchField)
+
+    const filteredMonsters = monsters.filter((monster) => {
+      return monster.name.toLocaleLowerCase().includes(searchField)
     })
 
     console.log('render')
+
+
+
     return (
       <div className="App">
-        <input className='search-box' type='search' placeholder='search' 
-        onChange={(event) => {console.log(event.target.value);
-          
-          const searchField = event.target.value.toLocaleLowerCase();
+        <SearchBox 
+        className='search-box'
+        onChangeHandler={onSearchChange} 
+        placeholder='search monsters' />
 
-          this.setState(() => {
-            return { searchField }
-            
-          })
-        }} />
-
-       {
+       {/* {
        filteredMonsters.map((monster) => {
         return <div key={monster.id}><h1>{monster.name}</h1></div>
        })
-       }
+       } */}
+
+       <CardList monsters={filteredMonsters} />
       </div>
     );
   }
